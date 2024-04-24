@@ -1,23 +1,27 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+require('dotenv').config()
 
-var fs = require('fs')
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const authenticateRequest = require('./middleware/authorization')
 
-var indexRouter = require('./routes/index');
+const indexRouter = require('./routes/index');
 
-var app = express();
+const app = express();
 
-const port = 3000
+const port = process.env.PORT || 3000
+
 
 app.use(logger('dev'));
 app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// Apply the referer access control middleware
+app.use(authenticateRequest);
+
 app.use('/', indexRouter);
+app.use('/upload', require('./routes/upload'));
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
