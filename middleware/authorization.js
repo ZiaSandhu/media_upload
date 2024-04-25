@@ -7,6 +7,6 @@ const authenticateRequest = (req, res, next) => {
     } else {
         return res.status(403).send('Forbidden'); // Reject the request
     }
-};ww
+};
 
 module.exports = authenticateRequest
