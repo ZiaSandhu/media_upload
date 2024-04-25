@@ -1,10 +1,10 @@
-var express = require('express');
-var router = express.Router();
-
+const express = require('express');
+const router = express.Router();
+const authenticateRequest = require('../middleware/authorization')
 const fs = require('fs')
 const path = require('path')
 
-var multer = require('multer')
+const multer = require('multer')
 
 const { v4: uuidv4 } = require('uuid');
 
@@ -28,7 +28,7 @@ const upload = multer({ storage: storage });
 
 
 
-router.post('/:directory', upload.array('files'),function(req, res, next) {
+router.post('/:directory', authenticateRequest,upload.array('files'),function(req, res, next) {
   let {directory} = req.params
   if(!directory)
   {
@@ -44,7 +44,7 @@ router.post('/:directory', upload.array('files'),function(req, res, next) {
   });
 
   // Send the URLs back to the client
-  res.json({ urls: fileUrls, message:"URL's of Saved files" });
+  res.status(200).json({ urls: fileUrls, message:"URL's of Saved files", success:true });
 });
 
 
